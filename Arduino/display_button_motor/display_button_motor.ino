@@ -3,13 +3,22 @@
 #define NUMPIXELS 256
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
+#include <RotaryEncoder.h>
 #define MOTOR_DIRECTION_IN1 2
 #define MOTOR_DIRECTION_IN2 3
 #define MOTOR_ENABLE 4
+#define MOTOR_ENCODER_IN1 A0
+#define MOTOR_ENCODER_IN2 A1
+
+int motor_encoder_position = 0;
 
 #define HOOP_BUTTON 8
 
 #define DELAYVAL 100
+
+void checkMotorPosition() {
+  encoder->tick();
+}
 
 void setup() {
   pixels.begin();
@@ -20,6 +29,10 @@ void setup() {
   digitalWrite(MOTOR_DIRECTION_IN1, LOW);
   digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
   analogWrite(MOTOR_ENABLE, 255);
+
+  // Attach motor encoder interrupts
+  attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN1), checkMotorPosition, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
 
 bool numeric[10][40] = {
@@ -539,6 +552,13 @@ void start()  {
 
 int timesRun = 0;
 void loop() {
+
+  // Check motor position (every 560 ticks is one rotation)
+  encoder->tick(); // Checks current encoder state
+  int motor_encoder_position_new = encoder->getPosition(); // Gets position in ticks (16-bit signed integer)
+  if (motor_encoder_position_new != motor_encoder_position) {
+    // Handle logic for changing hoop direction/speed
+  }
 
   pixels.clear();
   pixels.show();
