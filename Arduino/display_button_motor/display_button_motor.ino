@@ -31,6 +31,7 @@ void setup() {
   analogWrite(MOTOR_ENABLE, 255);
 
   // Attach motor encoder interrupts
+  encoder = new RotaryEncoder(MOTOR_ENCODER_IN1, MOTOR_ENCODER_IN2, RotaryEncoder::LatchMode::TWO03);
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN1), checkMotorPosition, CHANGE);
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
