@@ -11,13 +11,58 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 #define MOTOR_ENCODER_IN2 A1
 
 int motor_encoder_position = 0;
+int motor_position_min;
+int motor_position_max;
 
 #define HOOP_BUTTON 8
+
+#define ARCADE_BUTTON1 9
+#define ARCADE_BUTTON2 10
 
 #define DELAYVAL 100
 
 void checkMotorPosition() {
   encoder->tick();
+}
+
+void motorMove() {
+  // Move to left while ARCADE_BUTTON1 held, right with ARCADE_BUTTON2 held
+  unsigned int count = 0;
+  while (1) {
+    if (digitalRead(ARCADE_BUTTON1) == HIGH && digitalRead(ARCADE_BUTTON2) == LOW) {
+      digitalWrite(MOTOR_DIRECTION_IN1, 1);
+      digitalWrite(MOTOR_DIRECTION_IN2, 0);
+      analogWrite(MOTOR_ENABLE, 10);
+    } else if (digitalRead(ARCADE_BUTTON1) == LOW && digitalRead(ARCADE_BUTTON2) == HIGH) {
+      digitalWrite(MOTOR_DIRECTION_IN1, 0);
+      digitalWrite(MOTOR_DIRECTION_IN2, 1);
+      analogWrite(MOTOR_ENABLE, 10);
+    } else {
+      digitalWrite(MOTOR_DIRECTION_IN1, 0);
+      digitalWrite(MOTOR_DIRECTION_IN2, 0);
+      analogWrite(MOTOR_ENABLE, 0);
+      ++count;
+    }
+    delay(20)
+
+    // Return if button hasn't been pressed for 5 seconds
+    if (count >= 250) {
+      return;
+    }
+  }
+}
+
+// Choose left and rightmost position for the hoop to prevent causing damage
+void calibrateMotor() {
+  // Choose leftmost position
+  motorMove();
+  encoder->tick();
+  motor_position_min = encoder->getPosition();
+
+  // Choose rightmost position
+  motorMove();
+  encoder->tick();
+  motor_position_max = encoder->getPosition();
 }
 
 void setup() {
