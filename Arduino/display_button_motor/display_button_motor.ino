@@ -385,7 +385,7 @@ void level1() {
     }
     delay(1000);}
 
-    void level2() {
+void level2() {
 
         for (short i = 256; i > -300; i -= 8) {
             pixels.clear();
@@ -427,6 +427,25 @@ void level3() {
         pixels.show();
         delay(DELAYVAL);
     }}
+
+gameover()  {
+  for (short i = 256; i > -300; i -= 8) {
+        pixels.clear();
+
+        drawChar(i, 'G', 9, 0, 0);
+        drawChar(i + 32, 'A', 0, 9, 0);
+        drawChar(i + 32 * 2, 'M', 0, 0, 9);
+        drawChar(i + 32 * 3, 'E', 3, 3, 3);
+        drawSpace(i + 32 * 4);
+        drawChar(i + 32 * 5, 'O', 3, 3, 3);
+        drawChar(i + 32 * 6, 'V', 3, 3, 3);
+        drawChar(i + 32 * 7, 'E', 3, 3, 3);
+        drawChar(i + 32 * 8, 'R', 3, 3, 3);
+
+
+        pixels.show();
+        delay(DELAYVAL);
+}
 
 
 void start()  {
@@ -496,22 +515,43 @@ void loop() {
     if (motor_encoder_position_new != motor_encoder_position) {
         // Handle logic for changing hoop direction/speed
     }
-    //   // if (digitalRead(HOOP_BUTTON) == HIGH) {
-    //   //     for (unsigned char i = 0; i < 255; ++i) {
-    //   //       if (i % 8 == 0) {
-    //   //         pixels.setPixelColor(i, pixels.Color(20, 0, 0));
-    //   //       }
-    //   //     }
-    //   // }
 
-    //   pixels.show();
-    // pixels.clear();
-    // pixels.show();
-    onpress();
+    if (digitalRead(START_BUTTON) == HIGH) {
+        
+      onpress();
+      countdown();
+      int i = 60;
+      int score = 0;
+      while (i > -1)  {
+      
+        for(int i = 0; i < 4; i++)  {
+        scoreboard(i, score);
+        if (digitalRead(START_BUTTON) == HIGH) {
+          score += 1;
+      }
+        }
+        i--;}
+    
+    //level 2
+    if (score > 35) {
+      level2();
+      delay(1000);
+      i = 30
+      while (i > -1)  {
+
+      for(int i = 0; i < 4; i++)  {
+        scoreboard(i, score);
+        if (digitalRead(START_BUTTON) == HIGH) {
+          score += 1;
+      }
+        i--;}
+    }
+    gameover();
     pixels.clear();
     pixels.show();
-    delay(1000);
-    countdown();
+
+
+    }
 
     //   delay(DELAYVAL);
 
