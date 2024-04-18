@@ -10,6 +10,8 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 #define HOOP_BUTTON 8
 
 #define DELAYVAL 100
+unsigned long startTime;  //some global variables available anywhere in the program
+unsigned long currentTime;
 //https://www.arduino.cc/reference/en/language/functions/time/millis/
 
 void setup() {
@@ -21,6 +23,7 @@ void setup() {
   digitalWrite(MOTOR_DIRECTION_IN1, LOW);
   digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
   analogWrite(MOTOR_ENABLE, 255);
+  startTime= millis(); 
 }
 
 bool numeric[10][40] = {
@@ -375,7 +378,7 @@ void transition(int timesRun) {
         pixels.show();
 
 
-        delay(50); 
+        timer(50); 
     }
 }
 
@@ -399,19 +402,19 @@ void centerout()  {
         for (int col = 0; col < 32; col++) {
             if (topRow >= 0) { //light up the top side
                 int pixelIndex = topRow * 32 + col;
-                  pixels.setPixelColor(pixelIndex, pixels.Color(128, 128, 128)); 
+                  pixels.setPixelColor(pixelIndex, pixels.Color(9, 9, 9)); 
                 }
             
             if (bottomRow < maxHeight) { //light up the bottom side
                 int pixelIndex = bottomRow * 32 + col;
-                  pixels.setPixelColor(pixelIndex, pixels.Color(128, 128, 128)); 
+                  pixels.setPixelColor(pixelIndex, pixels.Color(9, 9, 9)); 
             }
             
         }
         pixels.show();
 
-        //delay to visually see the filling effect
-        delay(100); 
+
+        timer(100);
     }
 }
 
@@ -491,8 +494,10 @@ void level1() {
     
     
     pixels.show();
-    delay(DELAYVAL);
-}}
+    timer(100);
+  }
+  pixels.clear();
+}
 
 void level2() {
   
@@ -509,7 +514,7 @@ void level2() {
 
     
     pixels.show();
-    delay(DELAYVAL);
+    timer(100);
 }}
 
 
@@ -528,13 +533,14 @@ void level3() {
     
     
     pixels.show();
-    delay(DELAYVAL);
+    timer(100);
 }}
 
 
 void start()  {
   drawChar(48, 'G', 0, 9, 0);
   drawChar(144, '0', 3, 3, 3);
+  pixels.show();
 }
 
 void onpress()  {
@@ -553,20 +559,28 @@ void onpress()  {
             pixels.clear();
 
             drawChar(i, 'H', 9, 0, 0);
-            drawChar(i + 32, 'O', 0, 9, 0);
-            drawChar(i + 32 * 2, 'W', 0, 0, 9);
-            drawChar(i + 32 * 3, 'D', 3, 3, 3);
-            drawChar(i + 32 * 4, 'Y', 1, 4, 1);
-            drawSpace(i + 32 * 5);
-
-
+            drawChar(i + 48, 'O', 0, 9, 0);
+            drawChar(i + 48 * 2, 'W', 0, 0, 9);
+            drawChar(i + 48 * 3, 'D', 3, 3, 3);
+            drawChar(i + 48 * 4, 'Y', 1, 4, 1);
             pixels.show();
-            delay(DELAYVAL);
+            timer(100);
         }
     }
 
     level1();
-    // countdown();
+    timer(700);
+    countdown();
+    start();
+    timer(1000);
+    int i = 0;
+    while (i < 61)  {
+      int time = 60 - i;
+      scoreboard(i, time);
+      i++;
+      timer(1000);}
+
+  
 }
 
 void countdown()  {
@@ -574,27 +588,40 @@ void countdown()  {
     pixels.show();
     drawChar(96, '3', 9, 9, 9);
     pixels.show();
-    delay(1000);
+    timer(1000);
     drawChar(96, '2', 9, 9, 9);
     pixels.show();
-    delay(1000);
+    timer(1000);
     drawChar(96, '1', 9, 9, 9);
     pixels.show();
-    delay(1000);
+    timer(1000);
+    pixels.clear();
+}
+
+
+void timer(int ms) {
+  unsigned long startTime = millis();  // Record the start time
+  while (millis() - startTime < ms) {
+    currentTime = millis();
+  }
 }
 
 
 int timesRun = 0;
 void loop() {
 
-  int i = 0;
-  while (i < 61)  {
-    int time = 60 - i;
-    scoreboard(i, time);
-    i++;
-    delay(1000);
+  // int i = 0;
+  // while (i < 61)  {
+  //   int time = 60 - i;
+  //   scoreboard(i, time);
+  //   i++;
+  //   timer(1000);
 
-  }
+
+  // }
+  onpress();
+  // pixels.clear();
+  // pixels.show();
 
   // countdown();
   
@@ -609,7 +636,7 @@ void loop() {
   //   // }
     
   //   pixels.show();
-  //   delay(DELAYVAL);
+
   
   // digitalWrite(MOTOR_DIRECTION_IN1, !digitalRead(MOTOR_DIRECTION_IN1));
   // digitalWrite(MOTOR_DIRECTION_IN2, !digitalRead(MOTOR_DIRECTION_IN2));
