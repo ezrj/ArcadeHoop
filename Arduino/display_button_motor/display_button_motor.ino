@@ -42,12 +42,14 @@ void checkMotorPosition() {
 #define HOOP_BUTTON 9
 unsigned int score = 0;
 unsigned long lastScoreTime = 0;
+bool startGame = false;
 
 void buttonInterrupt() {
   if (digitalRead(9) && (millis() - lastScoreTime > 300)) {
     score += 2;
     lastScoreTime = millis();
   } else if (digitalRead(10)) {
+    startGame = true;
   } else if (digitalRead(11)) {
   }
   if (score > 99) score = 99;
@@ -636,7 +638,6 @@ void onpress()  {
     }
     j = 0;
     i++;
-    //timer(1000);
   }
 
 
@@ -667,37 +668,12 @@ void timer(int ms) {
 
 
 int timesRun = 0;
+
 void loop() {
-
-  // int i = 0;
-  // while (i < 61)  {
-  //   int time = 60 - i;
-  //   scoreboard(i, time);
-  //   i++;
-  //   timer(1000);
-
-
-  // }
-  onpress();
-  // pixels.clear();
-  // pixels.show();
-
-  // countdown();
-
-
-
-  //      if (digitalRead(HOOP_BUTTON) == HIGH) {
-  //          for (unsigned char i = 0; i < 255; ++i) {
-  //            if (i % 8 == 0) {
-  //              pixels.setPixelColor(i, pixels.Color(20, 0, 0));
-  //            }
-  //          }
-  //      }
-
-  //   pixels.show();
-
-
-  // digitalWrite(MOTOR_DIRECTION_IN1, !digitalRead(MOTOR_DIRECTION_IN1));
-  // digitalWrite(MOTOR_DIRECTION_IN2, !digitalRead(MOTOR_DIRECTION_IN2));
-
+  if (startGame) {
+    onpress();
+    startGame = false;
+  } else {
+    timer(100);
+  }
 }
