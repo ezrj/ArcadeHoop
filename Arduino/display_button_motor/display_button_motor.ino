@@ -41,10 +41,12 @@ void checkMotorPosition() {
 #include <PinChangeInterrupt.h>
 #define HOOP_BUTTON 9
 unsigned int score = 0;
+unsigned long lastScoreTime = 0;
 
 void buttonInterrupt() {
-  if (digitalRead(9)) {
+  if (digitalRead(9) && (millis() - lastScoreTime > 300)) {
     score += 2;
+    lastScoreTime = millis();
   } else if (digitalRead(10)) {
   } else if (digitalRead(11)) {
   }
@@ -618,13 +620,15 @@ void onpress()  {
   level1();
   timer(700);
   countdown();
+  score = 0;
+
   start();
   timer(1000);
   int i = 0;
   int j = 0;
   while (i < 61)  {
     int time = 60 - i;
-    if (j < 10) {
+    if (j < 9) {
       ++j;
       scoreboard(score, time);
       timer(100);
