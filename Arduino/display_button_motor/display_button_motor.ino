@@ -60,7 +60,8 @@ void checkMotorPosition() {
 #define HOOP_BUTTON 9
 unsigned int score = 0;
 unsigned long lastScoreTime = 0;
-bool startGame = false;
+bool startGameEasy = false;
+bool startGameHard = false;
 bool extraPoints = false;
 
 
@@ -68,10 +69,10 @@ void buttonInterrupt() {
   if (digitalRead(9) && (millis() - lastScoreTime > 500)) {
     score += extraPoints ? 3 : 2;
     lastScoreTime = millis();
-  } else if (digitalRead(10)) {
-        score += extraPoints ? 3 : 2;
-    startGame = true;
-  } else if (digitalRead(11)) {
+  } else if (digitalRead(10) && (millis() - lastScoreTime > 1000)) {
+    startGameEasy = true;
+  } else if (digitalRead(11) && (millis() - lastScoreTime > 1000)) {
+    startGameHard = true;
   }
   if (score > 99) score = 99;
 }
@@ -614,7 +615,7 @@ void start()  {
   pixels.show();
 }
 
-void onpress()  {
+void onpressEasy()  {
 
   for (int i = 0; i < 3; i++) {
     transition(i);
@@ -639,6 +640,95 @@ void onpress()  {
     }
   }
 
+  //level one
+  level1();
+  timer(700);
+  countdown();
+  score = 0;
+
+  start();
+  timer(1000);
+  int i = 0;
+  int j = 0;
+  for (i = 0; i < 61; ++i)  {
+    int time = 60 - i;
+    for (j = 0; j < 9; ++j) {
+      scoreboard(score, time);
+      timer(100);
+    }
+    extraPoints = (time <= 10) ? true : false;
+  }
+
+  //level 2
+  if (score >= 10) {
+    timer(5000);
+    level2();
+    timer(700);
+    countdown();
+
+    start();
+    timer(1000);
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < 31; ++i)  {
+      int time = 30 - i;
+      for (j = 0; j < 9; ++j) {
+        scoreboard(score, time);
+        timer(100);
+      }
+      extraPoints = (time <= 10) ? true : false;}
+    }
+
+  //level 3
+  if (score >= 25) {
+    timer(5000);
+    level3();
+    timer(700);
+    countdown();
+
+    start();
+    timer(1000);
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < 16; ++i)  {
+      int time = 15 - i;
+      for (j = 0; j < 9; ++j) {
+        scoreboard(score, time);
+        timer(100);
+      }
+      extraPoints = (time <= 10) ? true : false;}
+    }
+  
+  timer(10000);
+
+}
+
+void onpressHard()  {
+
+  for (int i = 0; i < 3; i++) {
+    transition(i);
+  }
+
+  for (int i = 0; i < 6; i++)  {
+    centerout();
+  }
+
+
+  for (int i = 0; i < 1; i++) {
+    for (short i = 256; i > -255; i -= 8) {
+      pixels.clear();
+
+      drawChar(i, 'H', 9, 0, 0);
+      drawChar(i + 48, 'O', 0, 9, 0);
+      drawChar(i + 48 * 2, 'W', 0, 0, 9);
+      drawChar(i + 48 * 3, 'D', 3, 3, 3);
+      drawChar(i + 48 * 4, 'Y', 1, 4, 1);
+      pixels.show();
+      timer(50);
+    }
+  }
+
+  //level one
   level1();
   timer(700);
   countdown();
@@ -660,8 +750,60 @@ void onpress()  {
     }
     extraPoints = (time <= 10) ? true : false;
   }
+
+  //level 2
+  if (score >= 20) {
+    timer(5000);
+    level2();
+    timer(700);
+    countdown();
+
+    moveMotor = true;
+    digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+    digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+
+    start();
+    timer(1000);
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < 31; ++i)  {
+      int time = 30 - i;
+      for (j = 0; j < 9; ++j) {
+        scoreboard(score, time);
+        timer(100);
+      }
+      extraPoints = (time <= 10) ? true : false;}
+    }
+
+  //level 3
+  if (score >= 40) {
+    timer(5000);
+    level3();
+    timer(700);
+    countdown();
+
+    moveMotor = true;
+    digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+    digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+
+    start();
+    timer(1000);
+    int i = 0;
+    int j = 0;
+    for (i = 0; i < 16; ++i)  {
+      int time = 15 - i;
+      for (j = 0; j < 9; ++j) {
+        scoreboard(score, time);
+        timer(100);
+      }
+      extraPoints = (time <= 10) ? true : false;}
+    }
+  
   moveMotor = false;
+  timer(10000);
+
 }
+
 
 void countdown()  {
   pixels.clear();
@@ -678,7 +820,6 @@ void countdown()  {
   pixels.clear();
 }
 
-
 void timer(int ms) {
   unsigned long startTime = millis();  // Record the start time
   while (millis() - startTime < ms) {
@@ -691,12 +832,19 @@ int timesRun = 0;
 
 void loop() {
   // Main game
-  onpress();
+  //onpress();
   
-//  if (startGame) {
-//    onpress();
-//    startGame = false;
-//  } else {
-//    timer(100);
-//  }
+ if (startGameEasy || startGameHard) {
+  if (startGameEasy == true)  {
+    onpressEasy();
+    startGameEasy = false;
+  }
+  else if (startGameHard == true)  {
+    onpressHard();
+    startGameHard = false;
+  }
+
+ } else {
+   timer(100);
+ }
 }
