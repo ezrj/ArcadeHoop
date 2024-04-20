@@ -13,6 +13,9 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 #define MOTOR_ENCODER_IN2 3
 RotaryEncoder *encoder = nullptr;
 
+bool moveMotor = false;
+
+
 void checkMotorPosition() {
   static int motor_encoder_position = 0;
 
@@ -26,13 +29,28 @@ void checkMotorPosition() {
     Serial.println((int)(encoder->getDirection()));
     motor_encoder_position = newPos;
 
-    if (newPos < -250) {
-      digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
-      digitalWrite(MOTOR_DIRECTION_IN2, LOW);
-    }
-    else if (newPos > 250) {
-      digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-      digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+    if (moveMotor) {
+      if (newPos < -250) {
+        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+      }
+      else if (newPos > 250) {
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+      }
+    } else {
+      if (newPos > -50 && newPos < 50) {
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+      }
+      else if (newPos < -50) {
+        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+      }
+      else if (newPos > 50) {
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+      }
     }
   }
 }
@@ -43,12 +61,15 @@ void checkMotorPosition() {
 unsigned int score = 0;
 unsigned long lastScoreTime = 0;
 bool startGame = false;
+bool extraPoints = false;
+
 
 void buttonInterrupt() {
-  if (digitalRead(9) && (millis() - lastScoreTime > 300)) {
-    score += 2;
+  if (digitalRead(9) && (millis() - lastScoreTime > 500)) {
+    score += extraPoints ? 3 : 2;
     lastScoreTime = millis();
   } else if (digitalRead(10)) {
+        score += extraPoints ? 3 : 2;
     startGame = true;
   } else if (digitalRead(11)) {
   }
@@ -63,14 +84,13 @@ unsigned long currentTime;
 //https://www.arduino.cc/reference/en/language/functions/time/millis/
 
 void setup() {
-  delay(4000);
   pixels.begin();
   pinMode(MOTOR_DIRECTION_IN1, OUTPUT);
   pinMode(MOTOR_DIRECTION_IN2, OUTPUT);
   pinMode(MOTOR_ENABLE, OUTPUT);
   pinMode(HOOP_BUTTON, INPUT);
   digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-  digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+  digitalWrite(MOTOR_DIRECTION_IN2, LOW);
   digitalWrite(MOTOR_ENABLE, 1);
   startTime= millis();
 
@@ -504,7 +524,7 @@ void scoreboard(int score, int time) {
     OnesTime = time % 10;
   }
 
-  else if (time > 10)  {
+  else if (time >= 10)  {
     OnesTime = time % 10;
     int timetemp = (time - OnesTime)/10;
     TensTime = timetemp;
@@ -624,23 +644,23 @@ void onpress()  {
   countdown();
   score = 0;
 
+  moveMotor = true;
+  digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+  digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+
   start();
   timer(1000);
   int i = 0;
   int j = 0;
-  while (i < 61)  {
+  for (i = 0; i < 61; ++i)  {
     int time = 60 - i;
-    if (j < 9) {
-      ++j;
+    for (j = 0; j < 9; ++j) {
       scoreboard(score, time);
       timer(100);
-      continue;
     }
-    j = 0;
-    i++;
+    extraPoints = (time <= 10) ? true : false;
   }
-
-
+  moveMotor = false;
 }
 
 void countdown()  {
@@ -670,10 +690,13 @@ void timer(int ms) {
 int timesRun = 0;
 
 void loop() {
-  if (startGame) {
-    onpress();
-    startGame = false;
-  } else {
-    timer(100);
-  }
+  // Main game
+  onpress();
+  
+//  if (startGame) {
+//    onpress();
+//    startGame = false;
+//  } else {
+//    timer(100);
+//  }
 }
