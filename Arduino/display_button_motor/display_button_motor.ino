@@ -111,7 +111,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
 
-bool newmatrix[22][40]  {
+bool newmatrix[19][40]  {
   //L
   {0,1,1,1,1,1,1,1,
     0,1,0,0,0,0,0,0,
@@ -235,25 +235,25 @@ bool newmatrix[22][40]  {
       0,0,0,0,1,0,0,1,
       0,0,0,0,1,0,0,1,
       0,0,0,0,1,0,0,1,
-      0,1,1,1,1,1,1,1},
+      0,1,1,1,1,1,1,1}
     //A
-    {0,1,1,1,1,1,1,0,
-    0,0,0,0,1,0,0,1,
-    0,0,0,0,1,0,0,1,
-    0,0,0,0,1,0,0,1,
-    0,1,1,1,1,1,1,0},
-    //M
-    {0,1,1,1,1,1,1,1,
-    0,0,0,0,0,0,1,0,
-    0,0,0,0,1,1,0,0,
-    0,0,0,0,0,0,1,0,
-    0,1,1,1,1,1,1,1},
-    //R
-    {0,1,1,1,1,1,1,1,
-    0,0,0,0,1,1,0,1,
-    0,0,0,1,0,1,0,1,
-    0,0,1,0,0,1,1,1,
-    0,1,0,0,0,0,0,0}
+    // {0,1,1,1,1,1,1,0,
+    // 0,0,0,0,1,0,0,1,
+    // 0,0,0,0,1,0,0,1,
+    // 0,0,0,0,1,0,0,1,
+    // 0,1,1,1,1,1,1,0},
+    // //M
+    // {0,1,1,1,1,1,1,1,
+    // 0,0,0,0,0,0,1,0,
+    // 0,0,0,0,1,1,0,0,
+    // 0,0,0,0,0,0,1,0,
+    // 0,1,1,1,1,1,1,1},
+    // //R
+    // {0,1,1,1,1,1,1,1,
+    // 0,0,0,0,1,1,0,1,
+    // 0,0,0,1,0,1,0,1,
+    // 0,0,1,0,0,1,1,1,
+    // 0,1,0,0,0,0,0,0}
     };
 //draws a letter in a sweeping from the right motion
 
@@ -662,7 +662,9 @@ void onpressEasy()  {
       extraPoints = (time <= 10) ? true : false;}
   }
 
-  gameover();
+  // gameover();
+  pixels.clear();
+  pixels.show();
   timer(10000);
 
 }
@@ -763,8 +765,10 @@ void onpressHard()  {
       extraPoints = (time <= 10) ? true : false;}
   }
   
-  gameover();
+  // gameover();
   moveMotor = false;
+  pixels.clear();
+  pixels.show();
   timer(10000);
 
 }
@@ -820,11 +824,15 @@ int timesRun = 0;
 void loop() {
   // Main game
   //onpress();
+  timer(300);
   if (timesRun < 255) {
-    pixels.setPixelColor(timesRun, 0, 30, 0);
+    pixels.setPixelColor(timesRun, 0, 255, 0);
+    pixels.show();
     timesRun += 1;
   }
   if (timesRun == 255)  {
+    pixels.clear();
+    pixels.show();
     timesRun = 0;
   }
 
