@@ -72,7 +72,6 @@ void buttonInterrupt() {
     score += extraPoints ? 3 : 2;
     if (score > 99) score = 99;
     lastScoreTime = millis();
-    startGameEasy = true;
   } else if (digitalRead(GAME_BUTTON_1)) {
     startGameEasy = true;
   } else if (digitalRead(GAME_BUTTON_2)) {
@@ -112,7 +111,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
 
-bool newmatrix[19][40]  {
+bool newmatrix[22][40]  {
   //L
   {0,1,1,1,1,1,1,1,
     0,1,0,0,0,0,0,0,
@@ -236,7 +235,26 @@ bool newmatrix[19][40]  {
       0,0,0,0,1,0,0,1,
       0,0,0,0,1,0,0,1,
       0,0,0,0,1,0,0,1,
-      0,1,1,1,1,1,1,1}};
+      0,1,1,1,1,1,1,1},
+    //A
+    {0,1,1,1,1,1,1,0,
+    0,0,0,0,1,0,0,1,
+    0,0,0,0,1,0,0,1,
+    0,0,0,0,1,0,0,1,
+    0,1,1,1,1,1,1,0},
+    //M
+    {0,1,1,1,1,1,1,1,
+    0,0,0,0,0,0,1,0,
+    0,0,0,0,1,1,0,0,
+    0,0,0,0,0,0,1,0,
+    0,1,1,1,1,1,1,1},
+    //R
+    {0,1,1,1,1,1,1,1,
+    0,0,0,0,1,1,0,1,
+    0,0,0,1,0,1,0,1,
+    0,0,1,0,0,1,1,1,
+    0,1,0,0,0,0,0,0}
+    };
 //draws a letter in a sweeping from the right motion
 
 void drawSpace(short num) {
@@ -314,6 +332,15 @@ void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, un
       break;
     case '9':
       index = 18;
+      break;
+    case 'A':
+      index = 19;
+      break;
+    case 'M':
+      index = 20;
+      break;
+    case 'R':
+      index = 21;
       break;
     default:
       index = 9;
@@ -597,7 +624,7 @@ void onpressEasy()  {
 
   //level 2
   if (score >= 10) {
-    timer(5000);
+    timer(3000);
     level2();
     timer(700);
     countdown();
@@ -617,7 +644,7 @@ void onpressEasy()  {
 
   //level 3
   if (score >= 25) {
-    timer(5000);
+    timer(3000);
     level3();
     timer(700);
     countdown();
@@ -635,6 +662,7 @@ void onpressEasy()  {
       extraPoints = (time <= 10) ? true : false;}
   }
 
+  gameover();
   timer(10000);
 
 }
@@ -689,7 +717,7 @@ void onpressHard()  {
 
   //level 2
   if (score >= 20) {
-    timer(5000);
+    timer(3000);
     level2();
     timer(700);
     countdown();
@@ -713,7 +741,7 @@ void onpressHard()  {
 
   //level 3
   if (score >= 40) {
-    timer(5000);
+    timer(3000);
     level3();
     timer(700);
     countdown();
@@ -734,7 +762,8 @@ void onpressHard()  {
       }
       extraPoints = (time <= 10) ? true : false;}
   }
-
+  
+  gameover();
   moveMotor = false;
   timer(10000);
 
@@ -763,12 +792,41 @@ void timer(int ms) {
   }
 }
 
+void gameover() {
+
+  for (short i = 256; i > -255; i -= 8) {
+    pixels.clear();
+
+    drawChar(i, 'G', 9, 0, 0);
+    drawChar(i + 48, 'A', 9, 0, 0);
+    drawChar(i + 48 * 2, 'M', 9, 0, 0);
+    drawChar(i + 48 * 3, 'E', 9, 0, 0);
+    drawSpace(i + 48 * 4);
+    drawChar(i + 48 * 5, 'O', 9, 0, 0);
+    drawChar(i + 48 * 6, 'V', 9, 0, 0);
+    drawChar(i + 48 * 7, 'E', 9, 0, 0);
+    drawChar(i + 48 * 8, 'R', 9, 0, 0);
+
+
+    pixels.show();
+    timer(50);
+  }
+  pixels.clear();
+}
+
 
 int timesRun = 0;
 
 void loop() {
   // Main game
   //onpress();
+  if (timesRun < 255) {
+    pixels.setPixelColor(timesRun, 0, 30, 0);
+    timesRun += 1;
+  }
+  if (timesRun == 255)  {
+    timesRun = 0;
+  }
 
   if (startGameEasy || startGameHard) {
     if (startGameEasy == true)  {
