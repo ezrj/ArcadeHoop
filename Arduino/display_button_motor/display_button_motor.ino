@@ -31,25 +31,25 @@ void checkMotorPosition() {
 
     if (moveMotor) {
       if (newPos < -250) {
-        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
-        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos > 250) {
-        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
     } else {
       if (newPos > -50 && newPos < 50) {
-        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos < -50) {
-        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
-        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos > 50) {
-        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
     }
   }
@@ -58,6 +58,8 @@ void checkMotorPosition() {
 
 #include <PinChangeInterrupt.h>
 #define HOOP_BUTTON 9
+#define GAME_BUTTON_1 10
+#define GAME_BUTTON_2 11
 unsigned int score = 0;
 unsigned long lastScoreTime = 0;
 bool startGameEasy = false;
@@ -66,15 +68,16 @@ bool extraPoints = false;
 
 
 void buttonInterrupt() {
-  if (digitalRead(9) && (millis() - lastScoreTime > 500)) {
+  if (digitalRead(HOOP_BUTTON) && (millis() - lastScoreTime > 500)) {
     score += extraPoints ? 3 : 2;
+    if (score > 99) score = 99;
     lastScoreTime = millis();
-  } else if (digitalRead(10) && (millis() - lastScoreTime > 1000)) {
     startGameEasy = true;
-  } else if (digitalRead(11) && (millis() - lastScoreTime > 1000)) {
+  } else if (digitalRead(GAME_BUTTON_1)) {
+    startGameEasy = true;
+  } else if (digitalRead(GAME_BUTTON_2)) {
     startGameHard = true;
   }
-  if (score > 99) score = 99;
 }
 
 #define BRIGHTNESS 5
@@ -95,11 +98,11 @@ void setup() {
   digitalWrite(MOTOR_ENABLE, 1);
   startTime= millis();
 
-  //  PCICR | = B00000001; // Enable interrupts on PB
-  //  PCMSK0 |= B00001110; // Allow interrupts on pins 11, 10,
-
   // Attach button interrupts
   attachPCINT(digitalPinToPCINT(HOOP_BUTTON), buttonInterrupt, CHANGE);
+  attachPCINT(digitalPinToPCINT(GAME_BUTTON_1), buttonInterrupt, CHANGE);
+  attachPCINT(digitalPinToPCINT(GAME_BUTTON_2), buttonInterrupt, CHANGE);
+
 
   // Attach motor encoder interrupts
   pinMode(MOTOR_ENCODER_IN1, OUTPUT);
@@ -108,73 +111,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN1), checkMotorPosition, CHANGE);
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
-
-bool numeric[10][40] = {
-  /*0*/{0,1,1,1,1,1,1,1,
-    0,1,0,0,0,1,0,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,1,0,0,0,1,
-    0,1,1,1,1,1,1,1},
-
-  /*1*/
-  {0,1,0,0,0,1,0,0,
-    0,1,0,0,0,0,1,0,
-    0,1,1,1,1,1,1,1,
-    0,1,0,0,0,0,0,0,
-    0,1,0,0,0,0,0,0},
-
-  /*2*/
-  {0,1,0,0,0,1,1,0,
-    0,1,1,0,0,0,0,1,
-    0,1,0,1,0,0,0,1,
-    0,1,0,0,1,1,1,1,
-    0,0,0,0,0,0,0,0},
-
-  /*3*/
-  {0,0,1,0,0,0,1,0,
-    0,1,0,0,0,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,0,1,1,1,1,1,0,
-    0,0,0,0,0,0,0,0},
-
-  /*4*/{0,0,0,0,1,1,1,1,
-    0,0,0,0,1,0,0,0,
-    0,0,0,0,1,0,0,0,
-    0,1,1,1,1,1,1,1,
-    0,0,0,0,0,0,0,0},
-
-  /*5*/{0,0,1,0,1,1,1,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,0,1,1,0,0,0,1,
-    0,0,0,0,0,0,0,0},
-
-  /*6*/{0,1,1,1,1,1,1,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,1,1,1,1,0,0,1},
-
-  /*7*/{0,1,0,0,0,0,0,1,
-    0,0,1,0,0,0,0,1,
-    0,0,0,1,0,0,0,1,
-    0,0,0,0,1,0,0,1,
-    0,0,0,0,0,1,1,1},
-
-  /*8*/{0,1,1,1,1,1,1,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,1,0,0,1,0,0,1,
-    0,1,1,1,1,1,1,1},
-
-  /*9*/{0,0,0,0,1,1,1,1,
-    0,0,0,0,1,0,0,1,
-    0,0,0,0,1,0,0,1,
-    0,0,0,0,1,0,0,1,
-    0,1,1,1,1,1,1,1}};
-
-
-
 
 bool newmatrix[19][40]  {
   //L
@@ -409,10 +345,10 @@ void symmetrical() {
     for (int j = 0; j < 32; j++)  {
       int pixelIndex = i * 32 +j;
       if ((i % 2 == 0) && (j % 2 != 0)) {
-        pixels.setPixelColor(pixelIndex, pixels.Color(0, 0, 0));
+	pixels.setPixelColor(pixelIndex, pixels.Color(0, 0, 0));
       }
       else if ((i % 2 != 0) && (pixelIndex % 2 == 0)) {
-        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
+	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
       }
 
     }}
@@ -438,22 +374,22 @@ void transition(int timesRun) {
 
     for (int row = 0; row < 8; row++) {
       if (leftColumn >= 0) { //light up the left side
-        int pixelIndex = row * maxWidth + leftColumn;
-        if (timesRun % 2 == 0) {
-          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0)); // can we get a maroon
-        }
-        else  {
-          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
-        }
+	int pixelIndex = row * maxWidth + leftColumn;
+	if (timesRun % 2 == 0) {
+	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0)); // can we get a maroon
+	}
+	else  {
+	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+	}
       }
       if (rightColumn < maxWidth) { //light up the right side
-        int pixelIndex = row * maxWidth + rightColumn;
-        if (timesRun % 2 == 0) {
-          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
-        }
-        else  {
-          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
-        }
+	int pixelIndex = row * maxWidth + rightColumn;
+	if (timesRun % 2 == 0) {
+	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
+	}
+	else  {
+	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+	}
       }
     }
 
@@ -484,13 +420,13 @@ void centerout()  {
 
     for (int col = 0; col < 32; col++) {
       if (topRow >= 0) { //light up the top side
-        int pixelIndex = topRow * 32 + col;
-        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+	int pixelIndex = topRow * 32 + col;
+	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
       }
 
       if (bottomRow < maxHeight) { //light up the bottom side
-        int pixelIndex = bottomRow * 32 + col;
-        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+	int pixelIndex = bottomRow * 32 + col;
+	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
       }
 
     }
@@ -673,11 +609,11 @@ void onpressEasy()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-        scoreboard(score, time);
-        timer(100);
+	scoreboard(score, time);
+	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
-    }
+  }
 
   //level 3
   if (score >= 25) {
@@ -693,12 +629,12 @@ void onpressEasy()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-        scoreboard(score, time);
-        timer(100);
+	scoreboard(score, time);
+	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
-    }
-  
+  }
+
   timer(10000);
 
 }
@@ -769,11 +705,11 @@ void onpressHard()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-        scoreboard(score, time);
-        timer(100);
+	scoreboard(score, time);
+	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
-    }
+  }
 
   //level 3
   if (score >= 40) {
@@ -793,12 +729,12 @@ void onpressHard()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-        scoreboard(score, time);
-        timer(100);
+	scoreboard(score, time);
+	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
-    }
-  
+  }
+
   moveMotor = false;
   timer(10000);
 
@@ -833,18 +769,17 @@ int timesRun = 0;
 void loop() {
   // Main game
   //onpress();
-  
- if (startGameEasy || startGameHard) {
-  if (startGameEasy == true)  {
-    onpressEasy();
+
+  if (startGameEasy || startGameHard) {
+    if (startGameEasy == true)  {
+      onpressEasy();
+      startGameEasy = false;
+    }
+    else if (startGameHard == true)  {
+      onpressHard();
+      startGameHard = false;
+    }
+    startGameHard = false;
     startGameEasy = false;
   }
-  else if (startGameHard == true)  {
-    onpressHard();
-    startGameHard = false;
-  }
-
- } else {
-   timer(100);
- }
 }
