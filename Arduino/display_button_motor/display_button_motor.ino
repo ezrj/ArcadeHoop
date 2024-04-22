@@ -41,15 +41,15 @@ void checkMotorPosition() {
 	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
     } else {
-      if (newPos > -50 && newPos < 50) {
+      if (newPos > -35 && newPos < 35) {
 	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
 	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
-      else if (newPos < -50) {
+      else if (newPos < -35) {
 	digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
 	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
-      else if (newPos > 50) {
+      else if (newPos > 35) {
 	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
 	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
