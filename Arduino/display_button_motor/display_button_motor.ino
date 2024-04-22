@@ -31,25 +31,25 @@ void checkMotorPosition() {
 
     if (moveMotor) {
       if (newPos < -250) {
-	digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
-	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos > 250) {
-	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
     } else {
       if (newPos > -50 && newPos < 50) {
-	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos < -50) {
-	digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
-	digitalWrite(MOTOR_DIRECTION_IN2, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN1, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN2, LOW);
       }
       else if (newPos > 50) {
-	digitalWrite(MOTOR_DIRECTION_IN1, LOW);
-	digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
+        digitalWrite(MOTOR_DIRECTION_IN1, LOW);
+        digitalWrite(MOTOR_DIRECTION_IN2, HIGH);
       }
     }
   }
@@ -112,132 +112,6 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
 
-bool newmatrix[19][40]  {
-  //L
-  {0,1,1,1,1,1,1,1,
-    0,1,0,0,0,0,0,0,
-    0,1,0,0,0,0,0,0,
-    0,1,0,0,0,0,0,0,
-    0,1,0,0,0,0,0,0},
-    //E
-    { 0,1,1,1,1,1,1,1,
-      0,1,0,0,0,1,0,1,
-      0,1,0,0,0,1,0,1,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,0,0,0,1 },
-    //V
-    {0,0,0,1,1,1,1,1,
-      0,0,1,0,0,0,0,0,
-      0,1,0,0,0,0,0,0,
-      0,0,1,0,0,0,0,0,
-      0,0,0,1,1,1,1,1},
-    //G
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,1,1,1,0,0,1},
-    //O
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,0,0,0,1,
-      0,1,1,1,1,1,1,1},
-    //H
-    {0,1,1,1,1,1,1,1,
-      0,0,0,0,1,0,0,0,
-      0,0,0,0,1,0,0,0,
-      0,0,0,0,1,0,0,0,
-      0,1,1,1,1,1,1,1},
-    //W
-    {0,1,1,1,1,1,1,1,
-      0,0,1,0,0,0,0,0,
-      0,0,0,1,1,0,0,0,
-      0,0,1,0,0,0,0,0,
-      0,1,1,1,1,1,1,1},
-    //D
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,0,0,0,1,
-      0,0,1,0,0,0,1,0,
-      0,0,0,1,1,1,0,0},
-    //Y
-    {0,0,0,0,0,0,1,1,
-      0,0,0,0,0,1,0,0,
-      0,1,1,1,1,0,0,0,
-      0,0,0,0,0,1,0,0,
-      0,0,0,0,0,0,1,1},
-
-    /*0*/
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,0,1,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,1,0,0,0,1,
-      0,1,1,1,1,1,1,1},
-
-    /*1*/
-    {0,1,0,0,0,1,0,0,
-      0,1,0,0,0,0,1,0,
-      0,1,1,1,1,1,1,1,
-      0,1,0,0,0,0,0,0,
-      0,1,0,0,0,0,0,0},
-
-    /*2*/
-    {0,1,0,0,0,1,1,0,
-      0,1,1,0,0,0,0,1,
-      0,1,0,1,0,0,0,1,
-      0,1,0,0,1,1,1,1,
-      0,0,0,0,0,0,0,0},
-
-    /*3*/
-    {0,0,1,0,0,0,1,0,
-      0,1,0,0,0,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,0,1,1,1,1,1,0,
-      0,0,0,0,0,0,0,0},
-
-    /*4*/
-    {0,0,0,0,1,1,1,1,
-      0,0,0,0,1,0,0,0,
-      0,0,0,0,1,0,0,0,
-      0,1,1,1,1,1,1,1,
-      0,0,0,0,0,0,0,0},
-
-    /*5*/
-    {0,0,1,0,1,1,1,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,0,1,1,0,0,0,1,
-      0,0,0,0,0,0,0,0},
-
-    /*6*/
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,1,1,1,0,0,1},
-
-    /*7*/
-    {0,1,0,0,0,0,0,1,
-      0,0,1,0,0,0,0,1,
-      0,0,0,1,0,0,0,1,
-      0,0,0,0,1,0,0,1,
-      0,0,0,0,0,1,1,1},
-
-    /*8*/
-    {0,1,1,1,1,1,1,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,0,0,1,0,0,1,
-      0,1,1,1,1,1,1,1},
-
-    /*9*/
-    {0,0,0,0,1,1,1,1,
-      0,0,0,0,1,0,0,1,
-      0,0,0,0,1,0,0,1,
-      0,0,0,0,1,0,0,1,
-      0,1,1,1,1,1,1,1}};
-//draws a letter in a sweeping from the right motion
 
 void drawSpace(short num) {
   //sets T
@@ -252,72 +126,234 @@ void drawSpace(short num) {
   }
 }
 
+void copyMatrix(bool *dstMatrix, bool *srcMatrix) {
+  for (short i = 0; i < 40; ++i) {
+    dstMatrix[i] = srcMatrix[i];
+  }
+}
+
 void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, unsigned char ib) {
   //sets T
   Serial.println("The character is 'a'");
   int index = 0;
+  bool charMatrix[40];
   switch (a) {
     case 'L':
-      Serial.println("The character is 'a'");
-      index = 0;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,0,0,0,
+          0,1,0,0,0,0,0,0,
+          0,1,0,0,0,0,0,0,
+          0,1,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'E':
-      index = 1;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,1,0,1,
+          0,1,0,0,0,1,0,1,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,0,0,0,1 };
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'V':
-      index = 2;
+      {
+        bool m[40] = 
+        {0,0,0,1,1,1,1,1,
+          0,0,1,0,0,0,0,0,
+          0,1,0,0,0,0,0,0,
+          0,0,1,0,0,0,0,0,
+          0,0,0,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'G':
-      index = 3;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,1,1,1,0,0,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'O':
-      index = 4;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,0,0,0,1,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'H':
-      index = 5;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,0,0,0,1,0,0,0,
+          0,0,0,0,1,0,0,0,
+          0,0,0,0,1,0,0,0,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'W':
-      index = 6;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,0,1,0,0,0,0,0,
+          0,0,0,1,1,0,0,0,
+          0,0,1,0,0,0,0,0,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'D':
-      index = 7;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,0,0,0,1,
+          0,0,1,0,0,0,1,0,
+          0,0,0,1,1,1,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case 'Y':
-      index = 8;
+      {
+        bool m[40] = 
+        {0,0,0,0,0,0,1,1,
+          0,0,0,0,0,1,0,0,
+          0,1,1,1,1,0,0,0,
+          0,0,0,0,0,1,0,0,
+          0,0,0,0,0,0,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '0':
-      index = 9;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,0,1,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,1,0,0,0,1,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '1':
-      index = 10;
+      {
+        bool m[40] = 
+        {0,1,0,0,0,1,0,0,
+          0,1,0,0,0,0,1,0,
+          0,1,1,1,1,1,1,1,
+          0,1,0,0,0,0,0,0,
+          0,1,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '2':
-      index = 11;
+      {
+        bool m[40] = 
+        {0,1,0,0,0,1,1,0,
+          0,1,1,0,0,0,0,1,
+          0,1,0,1,0,0,0,1,
+          0,1,0,0,1,1,1,1,
+          0,0,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '3':
-      index = 12;
+      {
+        bool m[40] = 
+        {0,0,1,0,0,0,1,0,
+          0,1,0,0,0,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,0,1,1,1,1,1,0,
+          0,0,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '4':
-      index = 13;
+      {
+        bool m[40] = 
+        {0,0,0,0,1,1,1,1,
+          0,0,0,0,1,0,0,0,
+          0,0,0,0,1,0,0,0,
+          0,1,1,1,1,1,1,1,
+          0,0,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '5':
-      index = 14;
+      {
+        bool m[40] = 
+        {0,0,1,0,1,1,1,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,0,1,1,0,0,0,1,
+          0,0,0,0,0,0,0,0};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '6':
-      index = 15;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,1,1,1,0,0,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '7':
-      index = 16;
+      {
+        bool m[40] = 
+        {0,1,0,0,0,0,0,1,
+          0,0,1,0,0,0,0,1,
+          0,0,0,1,0,0,0,1,
+          0,0,0,0,1,0,0,1,
+          0,0,0,0,0,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '8':
-      index = 17;
+      {
+        bool m[40] = 
+        {0,1,1,1,1,1,1,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,0,0,1,0,0,1,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     case '9':
-      index = 18;
+      {
+        bool m[40] = 
+        {0,0,0,0,1,1,1,1,
+          0,0,0,0,1,0,0,1,
+          0,0,0,0,1,0,0,1,
+          0,0,0,0,1,0,0,1,
+          0,1,1,1,1,1,1,1};
+        copyMatrix(charMatrix, m);
+      }
       break;
     default:
-      index = 9;
-      break;}
+      {
+        bool m[40] = {0};
+        copyMatrix(charMatrix, m);
+      }
+      break;
+  }
 
   bool t = (num % 16 > 7) || (num % 16 < -7);
   //loops from 0-39
@@ -327,7 +363,7 @@ void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, un
       j = 7 + (8 * (i / 8)) - i % 8;
     }
     Serial.println("The character is 'a'");
-    pixels.setPixelColor(i + num, pixels.Color(ir * newmatrix[index][j], ig * newmatrix[index][j], ib * newmatrix[index][j]));
+    pixels.setPixelColor(i + num, pixels.Color(ir * charMatrix[j], ig * charMatrix[j], ib * charMatrix[j]));
   }
 }
 
@@ -345,10 +381,10 @@ void symmetrical() {
     for (int j = 0; j < 32; j++)  {
       int pixelIndex = i * 32 +j;
       if ((i % 2 == 0) && (j % 2 != 0)) {
-	pixels.setPixelColor(pixelIndex, pixels.Color(0, 0, 0));
+        pixels.setPixelColor(pixelIndex, pixels.Color(0, 0, 0));
       }
       else if ((i % 2 != 0) && (pixelIndex % 2 == 0)) {
-	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
+        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
       }
 
     }}
@@ -374,22 +410,22 @@ void transition(int timesRun) {
 
     for (int row = 0; row < 8; row++) {
       if (leftColumn >= 0) { //light up the left side
-	int pixelIndex = row * maxWidth + leftColumn;
-	if (timesRun % 2 == 0) {
-	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0)); // can we get a maroon
-	}
-	else  {
-	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
-	}
+        int pixelIndex = row * maxWidth + leftColumn;
+        if (timesRun % 2 == 0) {
+          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0)); // can we get a maroon
+        }
+        else  {
+          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+        }
       }
       if (rightColumn < maxWidth) { //light up the right side
-	int pixelIndex = row * maxWidth + rightColumn;
-	if (timesRun % 2 == 0) {
-	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
-	}
-	else  {
-	  pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
-	}
+        int pixelIndex = row * maxWidth + rightColumn;
+        if (timesRun % 2 == 0) {
+          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, 0, 0));
+        }
+        else  {
+          pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+        }
       }
     }
 
@@ -420,13 +456,13 @@ void centerout()  {
 
     for (int col = 0; col < 32; col++) {
       if (topRow >= 0) { //light up the top side
-	int pixelIndex = topRow * 32 + col;
-	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+        int pixelIndex = topRow * 32 + col;
+        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
       }
 
       if (bottomRow < maxHeight) { //light up the bottom side
-	int pixelIndex = bottomRow * 32 + col;
-	pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
+        int pixelIndex = bottomRow * 32 + col;
+        pixels.setPixelColor(pixelIndex, pixels.Color(BRIGHTNESS, BRIGHTNESS, BRIGHTNESS));
       }
 
     }
@@ -609,8 +645,8 @@ void onpressEasy()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
-	timer(100);
+        scoreboard(score, time);
+        timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
   }
@@ -629,8 +665,8 @@ void onpressEasy()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
-	timer(100);
+        scoreboard(score, time);
+        timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
   }
@@ -705,8 +741,8 @@ void onpressHard()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
-	timer(100);
+        scoreboard(score, time);
+        timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
   }
@@ -729,8 +765,8 @@ void onpressHard()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
-	timer(100);
+        scoreboard(score, time);
+        timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
   }
