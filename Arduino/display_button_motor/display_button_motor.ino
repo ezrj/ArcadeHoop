@@ -2,6 +2,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #define PIN        6
+#define BUZZER_PIN 13
 #define NUMPIXELS 256
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -73,6 +74,7 @@ void buttonInterrupt() {
     score += extraPoints ? 3 : 2;
     if (score > 99) score = 99;
     lastScoreTime = millis();
+    playScoreSound(BUZZER_PIN);
   } else if (digitalRead(GAME_BUTTON_1)) {
     startGameEasy = true;
   } else if (digitalRead(GAME_BUTTON_2)) {
@@ -88,6 +90,7 @@ unsigned long currentTime;
 //https://www.arduino.cc/reference/en/language/functions/time/millis/
 
 void setup() {
+  pinMode(BUZZER_PIN, OUTPUT);
   pixels.begin();
   pinMode(MOTOR_DIRECTION_IN1, OUTPUT);
   pinMode(MOTOR_DIRECTION_IN2, OUTPUT);
@@ -361,9 +364,9 @@ void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, un
 }
 
 //ight up the entire board with a given color
-void lightUpBoard(uint8_t r, uint8_t g, uint8_t b) {
+void lightUpBoard() {
   for(int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, pixels.Color(BRIGHTNESS * r, BRIGHTNESS * g, BRIGHTNESS * b));
+    pixels.setPixelColor(i, 255, 0, 0);
   }
   pixels.show(); //has its own show
 }
@@ -603,6 +606,7 @@ void level3() {
 
 
 void start()  {
+
   drawChar(48, 'G', 0, 9, 0);
   drawChar(144, '0', 3, 3, 3);
   pixels.show();
@@ -692,7 +696,7 @@ void onpressEasy()  {
       extraPoints = (time <= 10) ? true : false;}
   }
 
-  // gameover();
+  gameover();
   pixels.clear();
   pixels.show();
   timer(10000);
@@ -797,7 +801,7 @@ void onpressHard()  {
       extraPoints = (time <= 10) ? true : false;}
   }
   
-  // gameover();
+  gameover();
   moveMotor = false;
   pixels.clear();
   pixels.show();
@@ -829,25 +833,73 @@ void timer(int ms) {
   }
 }
 
-void gameover() {
+void playScoreSound(int buzzerPin) {
+  const int scoreMelody[] = {6000, 4000};
 
-  for (short i = 256; i > -255; i -= 8) {
-    pixels.clear();
+  const int noteDuration = 100;
 
-    drawChar(i, 'G', 9, 0, 0);
-    drawChar(i + 48, 'A', 9, 0, 0);
-    drawChar(i + 48 * 2, 'M', 9, 0, 0);
-    drawChar(i + 48 * 3, 'E', 9, 0, 0);
-    drawSpace(i + 48 * 4);
-    drawChar(i + 48 * 5, 'O', 9, 0, 0);
-    drawChar(i + 48 * 6, 'V', 9, 0, 0);
-    drawChar(i + 48 * 7, 'E', 9, 0, 0);
-    drawChar(i + 48 * 8, 'R', 9, 0, 0);
-
-
-    pixels.show();
-    timer(50);
+  for (int i = 0; i < sizeof(scoreMelody) / sizeof(scoreMelody[0]); i++) {
+    tone(buzzerPin, scoreMelody[i], noteDuration);
+    delay(noteDuration);
   }
+}
+
+void playEasyModeSound(int buzzerPin) {
+  tone(buzzerPin, 5000, 300);
+  // const int melody[] = {300, 400, 500, 600, 700};
+  // const int noteDuration = 200;
+
+  // for (int i = 0; i < sizeof(melody) / sizeof(melody[0]); i++) {
+  //   tone(buzzerPin, melody[i], noteDuration);
+  //   delay(noteDuration);
+  // }
+}
+
+void playHardModeSound(int buzzerPin) {
+  tone(buzzerPin, 1000, 300);
+//   int melody[] = {
+//   196, 185, 175, 165, 156, 147, 139, 131
+// };
+
+//   int noteDurations[] = {
+//     200, 200, 200, 200, 200, 200, 200, 200
+//   };
+
+//   for (int i = 0; i < 8; i++) {
+//     tone(buzzerPin, melody[i], noteDurations[i]);
+//     delay(noteDurations[i] * 1.3);
+//   }
+}
+
+
+
+void playGameOverSound(int buzzerPin) {
+  const unsigned int BASE_FREQUENCY = 262;
+  const unsigned int NOTE_DURATION = 300;
+  const unsigned int PAUSE_DURATION = 100;
+
+  const int8_t gameOverMelody[] = {7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -12};
+
+  for (uint8_t i = 0; i < sizeof(gameOverMelody) / sizeof(gameOverMelody[0]); i++) {
+    int8_t note = gameOverMelody[i];
+    unsigned int frequency = BASE_FREQUENCY;
+    
+    if (note > 0) {
+      frequency *= pow(1.059463094359, note); // 1.059463094359 is the 12th root of 2. This is the factor to increase the frequency by one semitone (half step)
+    } else if (note < 0) {
+      frequency /= pow(1.059463094359, -note);
+    }
+
+    tone(buzzerPin, frequency, NOTE_DURATION);
+    delay(NOTE_DURATION + PAUSE_DURATION);
+  }
+
+  noTone(buzzerPin);
+}
+
+void gameover() {
+  lightUpBoard();
+  playGameOverSound(BUZZER_PIN);
   pixels.clear();
 }
 
@@ -871,10 +923,12 @@ void loop() {
 
   if (startGameEasy || startGameHard) {
     if (startGameEasy == true)  {
+      playEasyModeSound(BUZZER_PIN);
       onpressEasy();
       startGameEasy = false;
     }
     else if (startGameHard == true)  {
+      playHardModeSound(BUZZER_PIN);
       onpressHard();
       startGameHard = false;
     }
