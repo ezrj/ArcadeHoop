@@ -361,6 +361,8 @@ void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, un
 
     } else if (a >=65 && a <= 90) {
       pixels.setPixelColor(i + num, pixels.Color(ir * newmatrix[num - 65][j], ig * newmatrix[num - 65][j], ib * newmatrix[num - 65][j]));
+    } else {
+      drawSpace(num);
     }
   }
 }
