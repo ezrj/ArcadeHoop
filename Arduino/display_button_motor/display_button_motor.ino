@@ -2,6 +2,7 @@
 
 #include <Adafruit_NeoPixel.h>
 #define PIN        6
+#define BUZZER_PIN 13
 #define NUMPIXELS 256
 Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 
@@ -87,6 +88,7 @@ unsigned long currentTime;
 //https://www.arduino.cc/reference/en/language/functions/time/millis/
 
 void setup() {
+  pinMode(BUZZER_PIN, OUTPUT);
   pixels.begin();
   pinMode(MOTOR_DIRECTION_IN1, OUTPUT);
   pinMode(MOTOR_DIRECTION_IN2, OUTPUT);
@@ -662,7 +664,7 @@ void onpressEasy()  {
       extraPoints = (time <= 10) ? true : false;}
   }
 
-  // gameover();
+  gameover();
   pixels.clear();
   pixels.show();
   timer(10000);
@@ -765,7 +767,7 @@ void onpressHard()  {
       extraPoints = (time <= 10) ? true : false;}
   }
   
-  // gameover();
+  gameover();
   moveMotor = false;
   pixels.clear();
   pixels.show();
@@ -796,25 +798,51 @@ void timer(int ms) {
   }
 }
 
-void gameover() {
+void playGameOverSound(int buzzerPin) {
+  const unsigned int BASE_FREQUENCY = 262;
+  const unsigned int NOTE_DURATION = 300;
+  const unsigned int PAUSE_DURATION = 100;
 
-  for (short i = 256; i > -255; i -= 8) {
-    pixels.clear();
+  const int8_t gameOverMelody[] = {7, 6, 5, 4, 3, 2, 1, 0, -1, -2, -12};
 
-    drawChar(i, 'G', 9, 0, 0);
-    drawChar(i + 48, 'A', 9, 0, 0);
-    drawChar(i + 48 * 2, 'M', 9, 0, 0);
-    drawChar(i + 48 * 3, 'E', 9, 0, 0);
-    drawSpace(i + 48 * 4);
-    drawChar(i + 48 * 5, 'O', 9, 0, 0);
-    drawChar(i + 48 * 6, 'V', 9, 0, 0);
-    drawChar(i + 48 * 7, 'E', 9, 0, 0);
-    drawChar(i + 48 * 8, 'R', 9, 0, 0);
+  for (uint8_t i = 0; i < sizeof(gameOverMelody) / sizeof(gameOverMelody[0]); i++) {
+    int8_t note = gameOverMelody[i];
+    unsigned int frequency = BASE_FREQUENCY;
+    
+    if (note > 0) {
+      frequency *= pow(1.059463094359, note);
+    } else if (note < 0) {
+      frequency /= pow(1.059463094359, -note);
+    }
 
-
-    pixels.show();
-    timer(50);
+    tone(buzzerPin, frequency, NOTE_DURATION);
+    delay(NOTE_DURATION + PAUSE_DURATION);
   }
+
+  noTone(buzzerPin);
+}
+
+void gameover() {
+  lightUpBoard(9, 0, 0);
+  playGameOverSound(BUZZER_PIN);
+
+  // for (short i = 256; i > -255; i -= 8) {
+  //   pixels.clear();
+
+  //   drawChar(i, 'G', 9, 0, 0);
+  //   drawChar(i + 48, 'A', 9, 0, 0);
+  //   drawChar(i + 48 * 2, 'M', 9, 0, 0);
+  //   drawChar(i + 48 * 3, 'E', 9, 0, 0);
+  //   drawSpace(i + 48 * 4);
+  //   drawChar(i + 48 * 5, 'O', 9, 0, 0);
+  //   drawChar(i + 48 * 6, 'V', 9, 0, 0);
+  //   drawChar(i + 48 * 7, 'E', 9, 0, 0);
+  //   drawChar(i + 48 * 8, 'R', 9, 0, 0);
+
+
+  //   pixels.show();
+  //   timer(50);
+  // }
   pixels.clear();
 }
 
@@ -847,5 +875,6 @@ void loop() {
     }
     startGameHard = false;
     startGameEasy = false;
+    timesRun = 0;
   }
 }
