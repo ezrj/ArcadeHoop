@@ -674,7 +674,6 @@ void onpressEasy()  {
 }
 
 void onpressHard()  {
-  playHardModeSound(BUZZER_PIN);
 
   for (int i = 0; i < 3; i++) {
     transition(i);
@@ -813,28 +812,30 @@ void playScoreSound(int buzzerPin) {
 }
 
 void playEasyModeSound(int buzzerPin) {
-  const int melody[] = {300, 400, 500, 600, 700};
-  const int noteDuration = 200;
+  tone(buzzerPin, 5000, 300);
+  // const int melody[] = {300, 400, 500, 600, 700};
+  // const int noteDuration = 200;
 
-  for (int i = 0; i < sizeof(melody) / sizeof(melody[0]); i++) {
-    tone(buzzerPin, melody[i], noteDuration);
-    delay(noteDuration);
-  }
+  // for (int i = 0; i < sizeof(melody) / sizeof(melody[0]); i++) {
+  //   tone(buzzerPin, melody[i], noteDuration);
+  //   delay(noteDuration);
+  // }
 }
 
 void playHardModeSound(int buzzerPin) {
-  int melody[] = {
-  196, 185, 175, 165, 156, 147, 139, 131
-};
+  tone(buzzerPin, 1000, 300);
+//   int melody[] = {
+//   196, 185, 175, 165, 156, 147, 139, 131
+// };
 
-  int noteDurations[] = {
-    200, 200, 200, 200, 200, 200, 200, 200
-  };
+//   int noteDurations[] = {
+//     200, 200, 200, 200, 200, 200, 200, 200
+//   };
 
-  for (int i = 0; i < 8; i++) {
-    tone(buzzerPin, melody[i], noteDurations[i]);
-    delay(noteDurations[i] * 1.3);
-  }
+//   for (int i = 0; i < 8; i++) {
+//     tone(buzzerPin, melody[i], noteDurations[i]);
+//     delay(noteDurations[i] * 1.3);
+//   }
 }
 
 
@@ -894,7 +895,7 @@ void loop() {
       startGameEasy = false;
     }
     else if (startGameHard == true)  {
-      // playHardModeSound(BUZZER_PIN);
+      playHardModeSound(BUZZER_PIN);
       onpressHard();
       startGameHard = false;
     }
