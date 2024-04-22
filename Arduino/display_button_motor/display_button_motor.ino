@@ -501,6 +501,16 @@ void scoreboard(int score, int time, int goal) {
   unsigned char r = 0, g = BRIGHTNESS * 2, b = BRIGHTNESS; // Green color
   unsigned char r2 = BRIGHTNESS, g2 = BRIGHTNESS, b2 = BRIGHTNESS;
 
+  if (time < 10)  {
+    r2 = 100;
+    g2 = 0; 
+    b2 = 0;
+  }
+  if (score < goal) {
+    r = 9;
+    g = 0; 
+    b = 0;
+  }
   //tens places for time
   drawChar(0, '0' + TensTime, r2, g2, b2);
   //seconds place for time
@@ -870,5 +880,6 @@ void loop() {
     }
     startGameHard = false;
     startGameEasy = false;
+    timesRun = 0;
   }
 }
