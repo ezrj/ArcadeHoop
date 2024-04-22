@@ -111,7 +111,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
 
-bool newmatrix[19][40]  {
+constant PROGMEM bool newmatrix[19][40]  {
   //L
   {0,1,1,1,1,1,1,1,
     0,1,0,0,0,0,0,0,
