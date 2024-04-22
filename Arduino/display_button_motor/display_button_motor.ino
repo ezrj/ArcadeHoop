@@ -364,7 +364,7 @@ void drawChar(short num, unsigned char a, unsigned char ir, unsigned char ig, un
 //ight up the entire board with a given color
 void lightUpBoard() {
   for(int i = 0; i < NUMPIXELS; i++) {
-    pixels.setPixelColor(i, 255, 0, 0);
+    pixels.setPixelColor(i, 9, 0, 0);
   }
   pixels.show(); //has its own show
 }
@@ -501,10 +501,21 @@ void scoreboard(int score, int time) {
   unsigned char r = 0, g = BRIGHTNESS * 2, b = BRIGHTNESS; // Green color
   unsigned char r2 = BRIGHTNESS, g2 = BRIGHTNESS, b2 = BRIGHTNESS;
 
+  if (time < 10)  {
+    r2 = 9;
+    g2 = 0; 
+    b2 = 0;
+  }
+  if (score < goal) {
+    r = 9;
+    g = 0; 
+    b = 0;
+  }
+
   //tens places for time
-  drawChar(0, '0' + TensTime, r2, g2, b2);
+  drawChar(24, '0' + TensTime, r2, g2, b2);
   //seconds place for time
-  drawChar(48, '0' + OnesTime, r2, g2, b2);
+  drawChar(72, '0' + OnesTime, r2, g2, b2);
   //tens place for score
   drawChar(144, '0' + TensScore, r, g, b);
   //seconds place for score
