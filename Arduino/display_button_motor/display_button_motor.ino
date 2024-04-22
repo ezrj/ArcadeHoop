@@ -14,6 +14,7 @@ Adafruit_NeoPixel pixels(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
 RotaryEncoder *encoder = nullptr;
 
 bool moveMotor = false;
+int level = 1;
 
 
 void checkMotorPosition() {
@@ -110,6 +111,7 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN1), checkMotorPosition, CHANGE);
   attachInterrupt(digitalPinToInterrupt(MOTOR_ENCODER_IN2), checkMotorPosition, CHANGE);
 }
+
 
 bool newmatrix[19][40]  {
   //L
@@ -464,8 +466,9 @@ void centerout()  {
   }
 }
 
-void scoreboard(int score, int time) {
+void scoreboard(int score, int time, int goal) {
   // Clear the previous display
+  int progress = 0;
   pixels.clear();
   int OnesScore = 0;
   int TensScore = 0;
@@ -507,15 +510,32 @@ void scoreboard(int score, int time) {
   //seconds place for score
   drawChar(192, '0' + OnesScore, r, g, b);
 
+  progress = (32 * score) / goal;
+  progress = progress / 2;
+//score = 10
+//goal = 20
+//progress = 16
+
+  int index = 7;
+  if (score > 0)  {
+  for (int i = 0; i < progress; i++)  {
+    pixels.setPixelColor(index, 0, 9, 0);
+    index += 1;
+    pixels.setPixelColor(index, 0, 9, 0);
+    index += 15;
+  }}
+  
 
 
-  // Update the display to show the new scoreboard
+
+
+  // Update the display to show the new 
   pixels.show();
 }
 
 
 void level1() {
-
+  level = 1;
   for (short i = 256; i > -255; i -= 8) {
     pixels.clear();
 
@@ -535,7 +555,7 @@ void level1() {
 }
 
 void level2() {
-
+  level = 2;
   for (short i = 256; i > -255; i -= 8) {
     pixels.clear();
 
@@ -616,7 +636,7 @@ void onpressEasy()  {
   for (i = 0; i < 61; ++i)  {
     int time = 60 - i;
     for (j = 0; j < 9; ++j) {
-      scoreboard(score, time);
+      scoreboard(score, time, 10);
       timer(100);
     }
     extraPoints = (time <= 10) ? true : false;
@@ -636,7 +656,7 @@ void onpressEasy()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
+	scoreboard(score, time, 25);
 	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
@@ -656,7 +676,7 @@ void onpressEasy()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
+	scoreboard(score, time, 100);
 	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
@@ -711,7 +731,7 @@ void onpressHard()  {
   for (i = 0; i < 61; ++i)  {
     int time = 60 - i;
     for (j = 0; j < 9; ++j) {
-      scoreboard(score, time);
+      scoreboard(score, time, 20);
       timer(100);
     }
     extraPoints = (time <= 10) ? true : false;
@@ -735,7 +755,7 @@ void onpressHard()  {
     for (i = 0; i < 31; ++i)  {
       int time = 30 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
+	scoreboard(score, time, 40);
 	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
@@ -743,6 +763,7 @@ void onpressHard()  {
 
   //level 3
   if (score >= 40) {
+    level = 3;
     timer(3000);
     level3();
     timer(700);
@@ -759,7 +780,8 @@ void onpressHard()  {
     for (i = 0; i < 16; ++i)  {
       int time = 15 - i;
       for (j = 0; j < 9; ++j) {
-	scoreboard(score, time);
+	  scoreboard(score, time, 100);
+
 	timer(100);
       }
       extraPoints = (time <= 10) ? true : false;}
@@ -770,6 +792,7 @@ void onpressHard()  {
   pixels.clear();
   pixels.show();
   timer(10000);
+  //7,8, 15, 23,
 
 }
 
@@ -826,7 +849,7 @@ void loop() {
   //onpress();
   timer(300);
   if (timesRun < 255) {
-    pixels.setPixelColor(timesRun, 0, 255, 0);
+    pixels.setPixelColor(timesRun, 0, 9, 0);
     pixels.show();
     timesRun += 1;
   }
