@@ -1,5 +1,4 @@
-# ledmatrix
- 462 arcade hoop
+# Arcade Hoop Project
  ![Full Structure](./hooppicture.png)
 ![Hardware Picture](./hardware.png)
 
